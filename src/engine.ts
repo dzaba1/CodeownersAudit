@@ -28,7 +28,7 @@ export class Engine {
 
         let checks = this.matcher.matchAllFiles([...codeOwnerLines], rootDir);
         if (options.unowned) {
-            checks = Enumerable.where(checks, c => c.ownersLine?.owners == null);
+            checks = Enumerable.where(checks, c => c.unowned);
         }
 
         if (options.out) {
