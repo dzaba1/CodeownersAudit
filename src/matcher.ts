@@ -43,14 +43,14 @@ export class Matcher {
 
             if (ignore.ignores(file)) {
                 return {
-                    filepath: file,
+                    file,
                     ownersLine: codeOwnerLine
                 };
             }
         }
 
         return {
-            filepath: file
+            file
         }
     }
 }

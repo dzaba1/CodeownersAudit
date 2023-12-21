@@ -41,7 +41,7 @@ export class Engine {
 
         } else {
             for (const checkedFile of checks) {
-                console.log("/%s: %s", checkedFile.filepath.relativeLinux, checkedFile.ownersLine?.displayOwners());
+                console.log("/%s: %s", checkedFile.file.relativeLinux(), checkedFile.ownersLine?.displayOwners());
             }
         }
     }
@@ -60,6 +60,6 @@ export class Engine {
             pattern = `\"${currentPattern}\"`;
         }
 
-        return `\"/${checkedFile.filepath.relativeLinux}\",${owners},${pattern}\r\n`;
+        return `\"/${checkedFile.file.relativeLinux()}\",${owners},${pattern}\r\n`;
     }
 }
