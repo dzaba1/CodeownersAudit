@@ -18,24 +18,13 @@ class MatchWorker {
     }
 
     public getAllFiles(): Generator<FileInfo> {
-        let files = IO.getFiles(this.rootDir, true);
+        let files = IO.getFileInfos(this.rootDir, this.rootDir, true);
         files = this.filterFiles(files);
-
-        return Enumerable.select(files, f => new FileInfo(f, this.rootDir));
-    }
-
-    public filterFiles(files: Generator<string>): Generator<string> {
-        let newFiles = Enumerable.where(files, f => !f.includes("\\.git\\"))
-        newFiles = Enumerable.where(files, f => !f.includes("/.git/"))
-
-        if (this.gitIgnore) {
-            newFiles = Enumerable.where(files, f => !this.gitIgnore!.isIgnored(f));
-        }
 
         return files;
     }
 
-    public filterFileInfos(files: Generator<FileInfo>): Generator<FileInfo> {
+    public filterFiles(files: Generator<FileInfo>): Generator<FileInfo> {
         let newFiles = Enumerable.where(files, f => !f.linuxFullName().includes("/.git/"))
 
         if (this.gitIgnore) {
