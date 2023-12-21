@@ -1,0 +1,20 @@
+{
+  "name": "codeowners-audit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc",
+    "run": "tsc & node dist/index.js"
+  },
+  "keywords": ["codeowners"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "ignore": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5"
+  }
+}
