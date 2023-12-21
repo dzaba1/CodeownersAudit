@@ -4,6 +4,7 @@ import { ExitCode, ExitCodeError } from "./exitCodeError"
 import { Matcher } from "./matcher";
 import * as path from 'path';
 import * as fs from 'fs';
+import { FileCheck } from "./fileCheck";
 
 export interface ProgramOptions {
     codeowners?: string,
@@ -27,31 +28,38 @@ export class Engine {
 
         let checks = this.matcher.match([...codeOwnerLines], rootDir);
         if (options.unowned) {
-            checks = Enumerable.where(checks, c => c.owners == null);
+            checks = Enumerable.where(checks, c => c.ownersLine?.owners == null);
         }
 
         if (options.out) {
             let rawCsv = "Filepath,Owners,Pattern\r\n";
             for (const checkedFile of checks) {
-                let owners = "";
-                if (checkedFile.owners) {
-                    owners = `\"${checkedFile.owners}\"`;
-                }
-
-                let pattern = "";
-                if (checkedFile.pattern) {
-                    pattern = `\"${checkedFile.pattern}\"`;
-                }
-
-                rawCsv += `\"/${checkedFile.filepath.relativeLinux}\",${owners},${pattern}\r\n`;
+                rawCsv += this.toCsvLine(checkedFile);
             }
             rawCsv = rawCsv.trimEnd();
             fs.writeFileSync(options.out, rawCsv);
 
         } else {
             for (const checkedFile of checks) {
-                console.log("%s: %s", checkedFile.filepath.relativeLinux, checkedFile.owners);
+                console.log("/%s: %s", checkedFile.filepath.relativeLinux, checkedFile.ownersLine?.displayOwners());
             }
         }
+    }
+
+    private toCsvLine(checkedFile: FileCheck): string {
+        let owners = "";
+        const currentOwners = checkedFile.ownersLine?.displayOwners();
+
+        if (currentOwners) {
+            owners = `\"${currentOwners}\"`;
+        }
+
+        let pattern = "";
+        const currentPattern = checkedFile.ownersLine?.pattern;
+        if (currentPattern) {
+            pattern = `\"${currentPattern}\"`;
+        }
+
+        return `\"/${checkedFile.filepath.relativeLinux}\",${owners},${pattern}\r\n`;
     }
 }

@@ -15,12 +15,12 @@ export class CodeOwnersParser {
             }
 
             const [pathString, ...usernames] = line.split(/\s+/);
-            const lineParsed: CodeOwnersLine = {
-                pattern: pathString,
-                owners: usernames
-            };
+            let currentOwners: string[] | undefined = usernames;
+            if (currentOwners && currentOwners.length === 0) {
+                currentOwners = undefined;
+            }
 
-            yield lineParsed;
+            yield new CodeOwnersLine(pathString, currentOwners);
         }
     }
 }

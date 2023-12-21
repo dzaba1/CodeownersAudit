@@ -9,11 +9,11 @@ export module IO {
             .split(/\r\n|\r|\n/);
     }
 
-    export function *getAllFiles(dir: string): Generator<string> {
+    export function *getFiles(dir: string, recurse: boolean): Generator<string> {
         const files = fs.readdirSync(dir, { withFileTypes: true });
         for (const file of files) {
-            if (file.isDirectory()) {
-                yield* getAllFiles(path.join(dir, file.name));
+            if (file.isDirectory() && recurse) {
+                yield* getFiles(path.join(dir, file.name), true);
             } else {
                 yield path.join(dir, file.name);
             }

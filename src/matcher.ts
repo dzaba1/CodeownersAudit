@@ -22,7 +22,7 @@ export class Matcher {
     }
 
     private getFiles(rootDir: string): Generator<FileInfo> {
-        let files = IO.getAllFiles(rootDir);
+        let files = IO.getFiles(rootDir, true);
         files = Enumerable.where(files, f => !f.includes("\\.git\\"))
         files = Enumerable.where(files, f => !f.includes("/.git/"))
 
@@ -43,21 +43,10 @@ export class Matcher {
             ignore.add(codeOwnerLine.pattern);
 
             if (ignore.ignores(file)) {
-                let currentOwners = codeOwnerLine.owners;
-                if (currentOwners && currentOwners.length === 0) {
-                    currentOwners = undefined;
-                }
-
-                const matchCheck: FileCheck = {
+                return {
                     filepath: file,
-                    pattern: codeOwnerLine.pattern
-                }
-
-                if (currentOwners) {
-                    matchCheck.owners = currentOwners.join(" ");
-                }
-
-                return matchCheck;
+                    ownersLine: codeOwnerLine
+                };
             }
         }
 
