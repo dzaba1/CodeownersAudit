@@ -19,4 +19,13 @@ export module Enumerable {
         }
         return false;
     }
+
+    export function all<T>(gen: Generator<T>, predicate: (elem: T) => boolean): boolean {
+        for (const item of gen) {
+            if (!predicate(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

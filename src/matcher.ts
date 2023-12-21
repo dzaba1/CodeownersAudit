@@ -7,21 +7,23 @@ import { GitIgnore } from "./gitignore";
 import { IgnoreWrap } from "./ignoreWrap";
 import { FileInfo } from "./fileSystemInfo";
 
-class MatchWorker {
+export class MatchWorker {
     private readonly gitIgnore?: GitIgnore;
+    private readonly codeOwners: CodeOwnersLine[];
 
-    constructor(private readonly rootDir: string) {
+    constructor(private readonly rootDir: string,
+        codeOwners: CodeOwnersLine[]) {
         const gitIgnoreFile = path.join(rootDir, ".gitignore");
         if (IO.fileExists(gitIgnoreFile)) {
             this.gitIgnore = new GitIgnore(gitIgnoreFile);
         }
+
+        this.codeOwners = codeOwners.reverse();
     }
 
     public getAllFiles(): Generator<FileInfo> {
-        let files = IO.getFileInfos(this.rootDir, this.rootDir, true);
-        files = this.filterFiles(files);
-
-        return files;
+        const files = IO.getFileInfos(this.rootDir, this.rootDir, true);
+        return this.filterFiles(files);
     }
 
     public filterFiles(files: Generator<FileInfo>): Generator<FileInfo> {
@@ -33,26 +35,11 @@ class MatchWorker {
 
         return files;
     }
-}
 
-export class Matcher {
-    constructor() {
-    }
-
-    public *matchAllFiles(codeOwners: CodeOwnersLine[], rootDir: string): Generator<FileInfoCheck> {
-        const reversedOwners = codeOwners.reverse();
-        const worker = new MatchWorker(rootDir);
-        const files = worker.getAllFiles();
-
-        for (const file of files) {
-            yield this.matchFile(reversedOwners, file);
-        }
-    }
-
-    private matchFile(codeOwners: CodeOwnersLine[], file: FileInfo): FileInfoCheck {
+    public matchFile(file: FileInfo): FileInfoCheck {
         console.log("Checking: %s", file.fullName);
         
-        for (const codeOwnerLine of codeOwners) {
+        for (const codeOwnerLine of this.codeOwners) {
             const ignore = new IgnoreWrap();
             ignore.add(codeOwnerLine.pattern);
 
@@ -62,5 +49,19 @@ export class Matcher {
         }
 
         return new FileInfoCheck(file);
+    }
+}
+
+export class Matcher {
+    constructor() {
+    }
+
+    public *matchAllFiles(codeOwners: CodeOwnersLine[], rootDir: string): Generator<FileInfoCheck> {
+        const worker = new MatchWorker(rootDir, codeOwners);
+        const files = worker.getAllFiles();
+
+        for (const file of files) {
+            yield worker.matchFile(file);
+        }
     }
 }
