@@ -1,7 +1,7 @@
 import { IO } from "./io";
 import path from "path";
 import { IgnoreWrap } from "./ignoreWrap";
-import { FileInfo } from "./fileInfo";
+import { FileInfo } from "./fileSystemInfo";
 
 export class GitIgnore {
     private ignore?: IgnoreWrap;

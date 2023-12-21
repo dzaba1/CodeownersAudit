@@ -1,5 +1,5 @@
 import { CodeOwnersLine } from "./codeOwnersLine";
-import { FileInfo } from "./fileInfo";
+import { FileInfo } from "./fileSystemInfo";
 
 export interface FileCheck {
     filepath: FileInfo,

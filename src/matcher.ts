@@ -5,7 +5,7 @@ import { Enumerable } from "./enumerable";
 import { IO } from "./io";
 import { GitIgnore } from "./gitignore";
 import { IgnoreWrap } from "./ignoreWrap";
-import { FileInfo } from "./fileInfo";
+import { FileInfo } from "./fileSystemInfo";
 
 export class Matcher {
     constructor() {

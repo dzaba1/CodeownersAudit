@@ -1,5 +1,5 @@
 import ignore from "ignore";
-import { FileInfo } from "./fileInfo";
+import { FileInfo } from "./fileSystemInfo";
 
 export class IgnoreWrap {
     private readonly ignoreMgr = ignore();
@@ -9,6 +9,6 @@ export class IgnoreWrap {
     }
 
     public ignores(file: FileInfo): boolean {
-        return this.ignoreMgr!.ignores(file.relativeLinux);
+        return this.ignoreMgr!.ignores(file.relativeLinux());
     }
 }
