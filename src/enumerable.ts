@@ -12,4 +12,11 @@ export module Enumerable {
             yield selector(item);
         }
     }
+
+    export function any<T>(gen: Generator<T>): boolean {
+        for (const {} of gen) {
+            return true;
+        }
+        return false;
+    }
 }

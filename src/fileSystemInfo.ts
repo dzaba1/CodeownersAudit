@@ -1,5 +1,6 @@
 import path from "path";
 import { IO } from "./io";
+import { Enumerable } from "./enumerable";
 
 export class FileSystemInfo {
     constructor(public readonly fullName: string,
@@ -51,5 +52,9 @@ export class DirInfo extends FileSystemInfo {
 
     public getDirectories(): Generator<DirInfo> {
         return IO.getDirInfos(this.fullName, this.rootDir, false);
+    }
+
+    public empty(): boolean {
+        return !Enumerable.any(this.getFiles()) && !Enumerable.any(this.getDirectories());
     }
 }
