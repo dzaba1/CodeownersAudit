@@ -1,5 +1,5 @@
 import { CodeOwnersLine } from "./codeOwnersLine";
-import { FileCheck } from "./fileCheck";
+import { FileInfoCheck } from "./fileInfoCheck";
 import * as path from 'path';
 import { Enumerable } from "./enumerable";
 import { IO } from "./io";
@@ -11,7 +11,7 @@ export class Matcher {
     constructor() {
     }
 
-    public *matchAllFiles(codeOwners: CodeOwnersLine[], rootDir: string): Generator<FileCheck> {
+    public *matchAllFiles(codeOwners: CodeOwnersLine[], rootDir: string): Generator<FileInfoCheck> {
         const files = this.getFiles(rootDir);
         const reversedOwners = codeOwners.reverse();
 
@@ -34,7 +34,7 @@ export class Matcher {
         return Enumerable.select(files, f => new FileInfo(f, rootDir));
     }
 
-    private matchFile(codeOwners: CodeOwnersLine[], file: FileInfo): FileCheck {
+    private matchFile(codeOwners: CodeOwnersLine[], file: FileInfo): FileInfoCheck {
         console.log("Checking: %s", file.fullName);
         
         for (const codeOwnerLine of codeOwners) {
@@ -43,14 +43,14 @@ export class Matcher {
 
             if (ignore.ignores(file)) {
                 return {
-                    file,
+                    fileOrDir: file,
                     ownersLine: codeOwnerLine
                 };
             }
         }
 
         return {
-            file
+            fileOrDir: file
         }
     }
 }

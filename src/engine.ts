@@ -4,7 +4,7 @@ import { ExitCode, ExitCodeError } from "./exitCodeError"
 import { Matcher } from "./matcher";
 import * as path from 'path';
 import * as fs from 'fs';
-import { FileCheck } from "./fileCheck";
+import { FileInfoCheck } from "./fileInfoCheck";
 
 export interface ProgramOptions {
     codeowners?: string,
@@ -41,12 +41,12 @@ export class Engine {
 
         } else {
             for (const checkedFile of checks) {
-                console.log("/%s: %s", checkedFile.file.relativeLinux(), checkedFile.ownersLine?.displayOwners());
+                console.log("/%s: %s", checkedFile.fileOrDir.relativeLinux(), checkedFile.ownersLine?.displayOwners());
             }
         }
     }
 
-    private toCsvLine(checkedFile: FileCheck): string {
+    private toCsvLine(checkedFile: FileInfoCheck): string {
         let owners = "";
         const currentOwners = checkedFile.ownersLine?.displayOwners();
 
@@ -60,6 +60,6 @@ export class Engine {
             pattern = `\"${currentPattern}\"`;
         }
 
-        return `\"/${checkedFile.file.relativeLinux()}\",${owners},${pattern}\r\n`;
+        return `\"/${checkedFile.fileOrDir.relativeLinux()}\",${owners},${pattern}\r\n`;
     }
 }
