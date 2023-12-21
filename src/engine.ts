@@ -26,7 +26,7 @@ export class Engine {
         const codeOwnerLines = this.parser.parse(options.codeowners);
         const rootDir = path.dirname(options.codeowners);
 
-        let checks = this.matcher.match([...codeOwnerLines], rootDir);
+        let checks = this.matcher.matchAllFiles([...codeOwnerLines], rootDir);
         if (options.unowned) {
             checks = Enumerable.where(checks, c => c.ownersLine?.owners == null);
         }

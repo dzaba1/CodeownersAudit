@@ -9,10 +9,9 @@ import { FileInfo } from "./fileSystemInfo";
 
 export class Matcher {
     constructor() {
-
     }
 
-    public *match(codeOwners: CodeOwnersLine[], rootDir: string): Generator<FileCheck> {
+    public *matchAllFiles(codeOwners: CodeOwnersLine[], rootDir: string): Generator<FileCheck> {
         const files = this.getFiles(rootDir);
         const reversedOwners = codeOwners.reverse();
 
