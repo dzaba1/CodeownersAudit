@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc",
-    "run": "tsc & node dist/index.js"
+    "run": "tsc & node dist/index.js",
+    "test": "jasmine --config=jasmine.json"
   },
-  "keywords": ["codeowners"],
+  "keywords": [
+    "codeowners"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -15,6 +18,9 @@
     "ignore": "^5.3.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.5"
+    "@types/jasmine": "^5.1.4",
+    "@types/node": "^20.10.5",
+    "jasmine": "^5.1.0",
+    "ts-node": "^10.9.2"
   }
 }
