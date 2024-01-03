@@ -24,11 +24,16 @@ export class GitIgnore {
                 continue;
             }
 
-            if (line.startsWith('#')) {
+            const trimmed = line.trim();
+            if (trimmed === "") {
                 continue;
             }
 
-            this.ignore.add(line);
+            if (trimmed.startsWith('#')) {
+                continue;
+            }
+
+            this.ignore.add(trimmed);
         }
     }
 
