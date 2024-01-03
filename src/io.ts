@@ -51,4 +51,12 @@ export module IO {
     export function fileExists(file: string): boolean {
         return fs.existsSync(file);
     }
+
+    export function directoryExists(dir: string): boolean {
+        return fs.existsSync(dir);
+    }
+
+    export function removeDirectory(dir: string) {
+        fs.rmSync(dir, { recursive: true, force: true });
+    }
 }

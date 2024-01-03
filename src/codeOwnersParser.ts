@@ -6,7 +6,7 @@ export class CodeOwnersParser {
         const lines = IO.readLines(filename);
 
         for (const line of lines) {
-            if (!line) {
+            if (!line || line.trim() === "") {
                 continue;
             }
 
