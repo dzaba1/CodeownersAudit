@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "tsc",
     "run": "tsc & node dist/index.js",
-    "test": "jasmine --config=jasmine.json"
+    "test": "tsc & jasmine --config=jasmine.json"
   },
   "keywords": [
     "codeowners"

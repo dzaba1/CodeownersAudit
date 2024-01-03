@@ -30,10 +30,10 @@ export class MatchWorker {
         let newFiles = Enumerable.where(files, f => !f.linuxFullName().includes("/.git/"))
 
         if (this.gitIgnore) {
-            newFiles = Enumerable.where(files, f => !this.gitIgnore!.isIgnored(f.fullName));
+            newFiles = Enumerable.where(newFiles, f => !this.gitIgnore!.isIgnored(f.fullName));
         }
 
-        return files;
+        return newFiles;
     }
 
     public matchFile(file: FileInfo): FileInfoCheck {

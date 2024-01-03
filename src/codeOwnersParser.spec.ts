@@ -4,7 +4,7 @@ import fs from "fs";
 import { IO } from "./io";
 import { CodeOwnersParser } from "./codeOwnersParser";
 
-describe("CodeOwnersLine", () => {
+describe("CodeOwnersParser", () => {
     let tempPath: string;
 
     function cleanUp() {
@@ -15,7 +15,7 @@ describe("CodeOwnersLine", () => {
 
     beforeEach(() => {
         const temp = os.tmpdir();
-        tempPath = path.join(temp, "CodeOwnersLine");
+        tempPath = path.join(temp, "CodeOwnersParser");
 
         cleanUp();
         fs.mkdirSync(tempPath);
