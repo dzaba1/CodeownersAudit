@@ -38,10 +38,42 @@ describe("CodeOwnersLine", () => {
     it("parse - when empty file then noting", () => {
         const filename = writeContent(`
         
+
         `);
 
         const sut = createSut();
         const result = [...sut.parse(filename)];
         expect(result.length).toBe(0);
+    });
+
+    it("parse - when comment then noting", () => {
+        const filename = writeContent(`# this is a comment
+   # this is a comment`);
+
+        const sut = createSut();
+        const result = [...sut.parse(filename)];
+        expect(result.length).toBe(0);
+    });
+
+    it("parse - when no codeowners then codeowners undefined", () => {
+        const filename = writeContent(`*  `);
+
+        const sut = createSut();
+        const result = [...sut.parse(filename)];
+        expect(result.length).toBe(1);
+        expect(result[0].pattern).toBe("*");
+        expect(result[0].owners).toBeUndefined();
+    });
+
+    it("parse - when codeowners then codeowners", () => {
+        const filename = writeContent(`* myGroup1 myGroup2`);
+
+        const sut = createSut();
+        const result = [...sut.parse(filename)];
+        expect(result.length).toBe(1);
+        expect(result[0].pattern).toBe("*");
+        expect(result[0].owners!.length).toBe(2);
+        expect(result[0].owners![0]).toBe("myGroup1");
+        expect(result[0].owners![1]).toBe("myGroup2");
     });
 });
