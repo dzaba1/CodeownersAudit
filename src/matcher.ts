@@ -6,16 +6,19 @@ import { IO } from "./io";
 import { GitIgnore } from "./gitignore";
 import { IgnoreWrap } from "./ignoreWrap";
 import { FileInfo } from "./fileSystemInfo";
+import { Logger } from "winston";
 
 export class MatchWorker {
     private readonly gitIgnore?: GitIgnore;
     private readonly codeOwners: CodeOwnersLine[];
 
     constructor(private readonly rootDir: string,
+        private readonly logger: Logger,
         codeOwners: CodeOwnersLine[]) {
+
         const gitIgnoreFile = path.join(rootDir, ".gitignore");
         if (IO.fileExists(gitIgnoreFile)) {
-            this.gitIgnore = new GitIgnore(gitIgnoreFile);
+            this.gitIgnore = new GitIgnore(gitIgnoreFile, this.logger);
         }
 
         this.codeOwners = codeOwners.reverse();
@@ -26,18 +29,36 @@ export class MatchWorker {
         return this.filterFiles(files);
     }
 
+    private isInGitFolder(file: FileInfo): boolean {
+        if (file.linuxFullName().includes("/.git/")) {
+            this.logger.debug("Omitting %s because it is in the .git folder.", file.fullName);
+            return true;
+        }
+
+        return false;
+    }
+
+    private isInGitignore(file: FileInfo): boolean {
+        if (this.gitIgnore!.isIgnored(file.fullName)) {
+            this.logger.debug("Omitting %s because it is tracked by .gitignore.", file.fullName);
+            return true;
+        }
+
+        return false;
+    }
+
     public filterFiles(files: Generator<FileInfo>): Generator<FileInfo> {
-        let newFiles = Enumerable.where(files, f => !f.linuxFullName().includes("/.git/"))
+        let newFiles = Enumerable.where(files, f => !this.isInGitFolder(f))
 
         if (this.gitIgnore) {
-            newFiles = Enumerable.where(newFiles, f => !this.gitIgnore!.isIgnored(f.fullName));
+            newFiles = Enumerable.where(newFiles, f => !this.isInGitignore(f));
         }
 
         return newFiles;
     }
 
     public matchFile(file: FileInfo): FileInfoCheck {
-        console.log("Checking: %s", file.fullName);
+        this.logger.debug("Checking: %s", file.fullName);
         
         for (const codeOwnerLine of this.codeOwners) {
             const ignore = new IgnoreWrap();
@@ -53,11 +74,11 @@ export class MatchWorker {
 }
 
 export class Matcher {
-    constructor() {
+    constructor(private readonly logger: Logger) {
     }
 
     public *matchAllFiles(codeOwners: CodeOwnersLine[], rootDir: string): Generator<FileInfoCheck> {
-        const worker = new MatchWorker(rootDir, codeOwners);
+        const worker = new MatchWorker(rootDir, this.logger, codeOwners);
         const files = worker.getAllFiles();
 
         for (const file of files) {

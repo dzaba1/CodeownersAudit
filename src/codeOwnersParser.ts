@@ -1,8 +1,14 @@
+import { Logger } from "winston";
 import { CodeOwnersLine } from "./codeOwnersLine";
 import { IO } from "./io";
 
 export class CodeOwnersParser {
+    constructor(private readonly logger: Logger) {
+        
+    }
+
     public *parse(filename: string) {
+        this.logger.info("Start parsing %s file.", filename);
         const lines = IO.readLines(filename);
 
         for (const line of lines) {

@@ -2,12 +2,14 @@ import { IO } from "./io";
 import path from "path";
 import { IgnoreWrap } from "./ignoreWrap";
 import { FileInfo } from "./fileSystemInfo";
+import { Logger } from "winston";
 
 export class GitIgnore {
     private ignore?: IgnoreWrap;
     private rootDir: string;
 
-    constructor(private gitIgnoreFile: string) {
+    constructor(private readonly gitIgnoreFile: string,
+        private readonly logger: Logger) {
         this.rootDir = path.dirname(this.gitIgnoreFile);
     }
 
@@ -17,6 +19,7 @@ export class GitIgnore {
         }
 
         this.ignore = new IgnoreWrap();
+        this.logger.info("Start parsing %s file.", this.gitIgnoreFile);
         const lines = IO.readLines(this.gitIgnoreFile);
 
         for (const line of lines) {

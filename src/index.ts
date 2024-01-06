@@ -3,6 +3,7 @@ import { Engine } from "./engine";
 import { ExitCode, ExitCodeError } from "./exitCodeError";
 import { CodeOwnersParser } from "./codeOwnersParser";
 import { Matcher } from "./matcher";
+import { Logging } from "./logging";
 
 const program = new Command();
 program
@@ -16,7 +17,8 @@ program
 const options = program.opts();
 
 try {
-    const engine = new Engine(new CodeOwnersParser(), new Matcher());
+    const logger = Logging.createDefaultLogger();
+    const engine = new Engine(new CodeOwnersParser(logger), new Matcher(logger));
     engine.run({
         codeowners: options.codeowners,
         unowned: options.unowned,
