@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { IO } from "./io";
 import { CodeOwnersParser } from "./codeOwnersParser";
+import { Logger } from "winston";
 
 describe("CodeOwnersParser", () => {
     let tempPath: string;
@@ -26,7 +27,9 @@ describe("CodeOwnersParser", () => {
     });
 
     function createSut(): CodeOwnersParser {
-        return new CodeOwnersParser();
+        const logger = jasmine.createSpyObj<Logger>(["info"]);
+
+        return new CodeOwnersParser(logger);
     }
 
     function writeContent(content: string): string {

@@ -4,6 +4,7 @@ import fs from "fs";
 import { IO } from "./io";
 import { Matcher } from "./matcher";
 import { CodeOwnersLine } from "./codeOwnersLine";
+import { Logger } from "winston";
 
 describe("Matcher", () => {
     let tempPath: string;
@@ -27,7 +28,9 @@ describe("Matcher", () => {
     });
 
     function createSut(): Matcher {
-        return new Matcher();
+        const logger = jasmine.createSpyObj<Logger>(["info", "debug"]);
+
+        return new Matcher(logger);
     }
 
     function writeSomeFile(filename: string, content: string): string {
